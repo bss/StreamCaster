@@ -1,0 +1,1 @@
+Simple server which ouputs a file to every client. Created to work as the twitter streaming api.
