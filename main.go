@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 	"flag"
+	"strconv"
 )
 /*
  * Reasonable DELAY_TIME values, tested by using curl on the service:
@@ -21,6 +22,7 @@ var fileHandle *os.File
 
 func main() {
 	flag.Int64Var(&delay, "delay", 0, "Delay per tweet in ns.")
+	port := flag.Int("port", 3000, "The port to bind to.")
 	flag.Usage = usage
 	flag.Parse()
 	
@@ -36,13 +38,13 @@ func main() {
 		os.Exit(2)
 	}
 	defer fileHandle.Close()
-	fmt.Print("Starting up server.\n")
+	fmt.Printf("Starting up server on port %d.\n", *port)
 	if (delay > 0) {
 		fmt.Printf("Delaying tweets by %d ns.\n", delay)
 	}
 	
 	http.HandleFunc("/", sample)
-	http.ListenAndServe(":3000", nil)
+	http.ListenAndServe(":"+strconv.Itoa(*port), nil)
 }
 
 func usage() {
