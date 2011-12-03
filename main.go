@@ -21,17 +21,11 @@ var fileHandle *os.File
 
 func main() {
 	flag.Int64Var(&delay, "delay", 0, "Delay per tweet in ns.")
+	flag.Usage = usage
 	flag.Parse()
 	
 	if flag.NArg() == 0 {
-		fmt.Fprintf(os.Stderr, "usage: %s [options] inputfile\n", flag.Arg(0))
-		flag.PrintDefaults()
-		fmt.Fprintf(os.Stderr, "\n");
-		fmt.Fprintf(os.Stderr, "Reasonable DELAY_TIME values, tested by using curl on the service:\n");
-		fmt.Fprintf(os.Stderr, "    (Firehose, Peak)     8000 tweets pr. s (~18 mb/s):      7142\n");
-		fmt.Fprintf(os.Stderr, "    (Firehose)           3000 tweets pr. s (~6.9 mb/s):     235294\n");
-		fmt.Fprintf(os.Stderr, "    (Gardenhose)          300 tweets pr. s (~0.69 mb/s):    2857142\n");
-		fmt.Fprintf(os.Stderr, "    (Sprinkler)            30 tweets pr. s (~0.07 mb/s):    33333333\n");
+		flag.Usage()
 		os.Exit(2)
 	}
 	
@@ -49,6 +43,17 @@ func main() {
 	
 	http.HandleFunc("/", sample)
 	http.ListenAndServe(":3000", nil)
+}
+
+func usage() {
+	fmt.Fprintf(os.Stderr, "usage: %s [options] inputfile\n", os.Args[0])
+	flag.PrintDefaults()
+	fmt.Fprintf(os.Stderr, "\n");
+	fmt.Fprintf(os.Stderr, "Reasonable DELAY_TIME values, tested by using curl on the service:\n");
+	fmt.Fprintf(os.Stderr, "    (Firehose, Peak)     8000 tweets pr. s (~18 mb/s):      7142\n");
+	fmt.Fprintf(os.Stderr, "    (Firehose)           3000 tweets pr. s (~6.9 mb/s):     235294\n");
+	fmt.Fprintf(os.Stderr, "    (Gardenhose)          300 tweets pr. s (~0.69 mb/s):    2857142\n");
+	fmt.Fprintf(os.Stderr, "    (Sprinkler)            30 tweets pr. s (~0.07 mb/s):    33333333\n");
 }
 
 func sample(w http.ResponseWriter, r *http.Request) {
