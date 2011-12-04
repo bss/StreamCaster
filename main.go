@@ -64,7 +64,13 @@ func sample(w http.ResponseWriter, r *http.Request) {
 	for {
 		line, readErr := reader.ReadBytes('\n')
 		if readErr != nil {
-			if readErr != os.EOF { // Kill EOF errors silently
+			if readErr == os.EOF  { // Go to start of file when we have EOF and return
+				_, err := fileHandle.Seek(0, 0)
+				if err != nil {
+					fmt.Printf("Got seek err: %s\n", err)
+					os.Exit(2)
+				}
+			} else {
 				fmt.Printf("Got readErr: %s\n", readErr)
 			}
 			return
