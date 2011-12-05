@@ -59,18 +59,18 @@ func usage() {
 }
 
 func sample(w http.ResponseWriter, r *http.Request) {
+	/*_, err := fileHandle.Seek(0, 0) // Seek to start of file on new request.
+	if err != nil {
+		fmt.Printf("Got seek err: %s\n", err)
+		os.Exit(2)
+	}*/
+	
 	var reader *bufio.Reader
 	reader = bufio.NewReader(fileHandle)
 	for {
 		line, readErr := reader.ReadBytes('\n')
 		if readErr != nil {
-			if readErr == os.EOF  { // Go to start of file when we have EOF and return
-				_, err := fileHandle.Seek(0, 0)
-				if err != nil {
-					fmt.Printf("Got seek err: %s\n", err)
-					os.Exit(2)
-				}
-			} else {
+			if readErr != os.EOF  {
 				fmt.Printf("Got readErr: %s\n", readErr)
 			}
 			return
